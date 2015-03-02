@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <configure
+        xmlns="http://namespaces.zope.org/zope"
+        xmlns:browser="http://namespaces.zope.org/browser"
+        xmlns:zcml="http://namespaces.zope.org/zcml">
+        <configure zcml:condition="installed Products.Zuul">
+
+            <include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
+
+
+            <!-- ZenPack Info -->
+
+            <browser:directRouter
+                name="Apigee_router"
+                for="*"
+                class="ZenPacks.community.Apigee.routers.ApigeeRouter"
+                namespace="Zenoss.remote"
+                permission="zenoss.View"
+            />
+    
+            <adapter
+                name="ApigeeAdapter"
+                provides="ZenPacks.community.Apigee.interfaces.IApigeeFacade"
+                for="*"
+                factory="ZenPacks.community.Apigee.facades.ApigeeFacade"
+            />
+                
+            <browser:resourceDirectory
+                    name="Apigee"
+                    directory="resources"
+            />
+
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.Apigee.info.APIMethodInfo"
+                for="ZenPacks.community.Apigee.APIMethod.APIMethod"
+                provides="ZenPacks.community.Apigee.interfaces.IAPIMethodInfo"
+            />
+    
+            <browser:viewlet
+                name="js-APIMethod"
+                paths="/++resource++Apigee/apimethod.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
+
+            <utility provides="zope.schema.interfaces.IVocabularyFactory"
+                component=".info.APIMethodgetEventClassesVocabulary"
+                name="APIMethodgetEventClasses"
+            />
+
+            <browser:viewlet
+                  name="component-add-menu-apimethod"
+                  paths="/++resource++Apigee/apimethod-add.js"
+                  weight="9"
+                  for="Products.ZenModel.Device.Device"
+                  manager="Products.ZenUI3.browser.interfaces.IHeadExtraManager"
+                  class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                  permission="zope2.Public"
+            />
+
+        </configure>
+    </configure>
+
